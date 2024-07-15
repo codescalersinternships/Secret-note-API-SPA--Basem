@@ -7,6 +7,7 @@ type Note struct {
 	Content    string `gorm: "type:text"`
 	UniqueKey  string `gorm: "uniqueIndex"`
 	Expiration time.Time
+	CreatedAt  time.Time `gorm: "autoCreateTime"`
 	MaxViews   int
 	Views      int
 	UserID     uint
