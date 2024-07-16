@@ -42,7 +42,7 @@ func verifyToken(tokenString string) (string, error) {
 		username := claims["username"].(string)
 		return username, nil
 	} else {
-		return "", fmt.Errorf("Invalid token")
+		return "", fmt.Errorf("invalid token")
 	}
 }
 
