@@ -15,6 +15,7 @@ func RegisterRoutes(r *gin.Engine) {
 	auth := r.Group("/")
 	auth.Use(utils.AuthMiddleware())
 	{
+
 		auth.GET("/user/notes", controllers.GetUserNotes)
 	}
 }

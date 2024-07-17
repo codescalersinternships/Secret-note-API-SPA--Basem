@@ -5,6 +5,7 @@ import (
 
 	"github.com/codescalersinternships/Secret-note-API-SPA--Basem/database"
 	"github.com/codescalersinternships/Secret-note-API-SPA--Basem/routes"
+	"github.com/codescalersinternships/Secret-note-API-SPA--Basem/utils"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
@@ -13,6 +14,7 @@ func main() {
 	database.ConnectDatabase()
 
 	r := gin.Default()
+	r.Use(utils.RateLimiterMiddleware(1, 5))
 	r.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"http://localhost:5173"},
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE"},
