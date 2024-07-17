@@ -5,6 +5,7 @@ import UserRegister from '@/components/UserRegister.vue'
 import CreateNote from '@/components/CreateNote.vue';
 import ViewNote from '@/components/ViewNote.vue';
 import UserDashboard from '@/components/UserDashboard.vue';
+import MyNotes from '@/components/MyNotes.vue';
 
 
 
@@ -14,7 +15,8 @@ const routes: Array<RouteRecordRaw> = [
   { path: '/register', component: UserRegister },
   { path: '/note', component: CreateNote },
   { path: '/note/:key', component: ViewNote },
-  { path: '/dashboard', component: UserDashboard }
+  { path: '/dashboard', component: UserDashboard },
+  { path: '/notes', component: MyNotes }
 ];
 
 const router = createRouter({

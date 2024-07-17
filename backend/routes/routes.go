@@ -9,7 +9,7 @@ import (
 func RegisterRoutes(r *gin.Engine) {
 	r.POST("/register", controllers.Register)
 	r.POST("/login", controllers.Login)
-	r.POST("/note", controllers.CreateNote)
+	r.POST("/note", utils.OptionalAuthMiddleware(), controllers.CreateNote)
 	r.GET("/note/:key", controllers.GetNoteByKey)
 
 	auth := r.Group("/")

@@ -21,7 +21,7 @@ func CreateNote(c *gin.Context) {
 	if !ok {
 		userID = nil
 	} else {
-		userID = userID.(uint)
+		userID = userID.(string)
 	}
 
 	var input CreateNoteInput
@@ -47,6 +47,7 @@ func CreateNote(c *gin.Context) {
 		Expiration: expirationTime,
 		MaxViews:   input.MaxViews,
 		Views:      0,
+		Username:   userID.(string),
 	}
 
 	database.DB.Create(&note)
