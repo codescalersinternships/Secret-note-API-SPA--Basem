@@ -10,13 +10,21 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type NoteController struct {
+	DB *database.DB
+}
+
+func NewNoteController(db *database.DB) *NoteController {
+	return &NoteController{DB: db}
+}
+
 type CreateNoteInput struct {
 	Content    string `json:"content" binding:"required"`
 	Expiration string `json:"expiration" binding:"required"`
 	MaxViews   int    `json:"maxViews" binding:"required,min=1"`
 }
 
-func CreateNote(c *gin.Context) {
+func (nc *NoteController) CreateNote(c *gin.Context) {
 	userID, ok := c.Get("userID")
 	if !ok {
 		userID = nil
@@ -50,15 +58,16 @@ func CreateNote(c *gin.Context) {
 		Username:   userID.(string),
 	}
 
-	database.DB.Create(&note)
+	nc.DB.CreateNote(&note)
 	c.JSON(http.StatusOK, gin.H{"url": "/note/" + note.UniqueKey})
 }
 
-func GetNoteByKey(c *gin.Context) {
+func (nc *NoteController) GetNoteByKey(c *gin.Context) {
 	uniqueKey := c.Param("key")
-	var note models.Note
 
-	if err := database.DB.Where("unique_key = ?", uniqueKey).First(&note).Error; err != nil {
+	note, err := nc.DB.GetNoteByKey(uniqueKey)
+
+	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Note not found"})
 		return
 	}
@@ -69,16 +78,16 @@ func GetNoteByKey(c *gin.Context) {
 	}
 
 	note.Views++
-	database.DB.Save(&note)
+	nc.DB.UpdateNoteViews(note)
 	c.JSON(http.StatusOK, gin.H{"content": note.Content})
 }
 
-func GetUserNotes(c *gin.Context) {
+func (nc *NoteController) GetUserNotes(c *gin.Context) {
 
 	userID, _ := c.Get("userID")
 
-	var notes []models.Note
-	if err := database.DB.Where("Username = ?", userID).Find(&notes).Error; err != nil {
+	notes, err := nc.DB.GetUserNotes(userID.(string))
+	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Notes not found"})
 		return
 	}

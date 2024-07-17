@@ -6,16 +6,17 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func RegisterRoutes(r *gin.Engine) {
-	r.POST("/register", controllers.Register)
-	r.POST("/login", controllers.Login)
-	r.POST("/note", utils.OptionalAuthMiddleware(), controllers.CreateNote)
-	r.GET("/note/:key", controllers.GetNoteByKey)
+func RegisterRoutes(r *gin.Engine, noteController *controllers.NoteController, userController *controllers.UserController) {
+
+	r.POST("/register", userController.Register)
+	r.POST("/login", userController.Login)
+	r.POST("/note", utils.OptionalAuthMiddleware(), noteController.CreateNote)
+	r.GET("/note/:key", noteController.GetNoteByKey)
 
 	auth := r.Group("/")
 	auth.Use(utils.AuthMiddleware())
 	{
 
-		auth.GET("/user/notes", controllers.GetUserNotes)
+		auth.GET("/user/notes", noteController.GetUserNotes)
 	}
 }
