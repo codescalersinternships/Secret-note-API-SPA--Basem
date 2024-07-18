@@ -59,7 +59,7 @@ export default defineComponent({
 
         const data = await response.json()
         if (response.ok) {
-          noteURL.value = `http://localhost:5173${data.url}`
+          noteURL.value = `${window.location.origin}${data.url}`
         } else {
           alert(data.error)
         }
