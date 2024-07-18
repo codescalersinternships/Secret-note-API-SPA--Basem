@@ -11,7 +11,10 @@
       "path": "./tsconfig.vitest.json"
     }
   ],
+  "include": ["src/**/*.ts", "src/vite-env.d.ts"],
   "compilerOptions": {
-    "module": "NodeNext"
+    "module": "ESNext",
+    "target": "ESNext",
+    "moduleResolution": "Node"
   }
 }

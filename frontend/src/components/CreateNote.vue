@@ -47,7 +47,7 @@ export default defineComponent({
           headers.append('Authorization', 'Bearer ' + token)
         }
 
-        const response = await fetch('http://localhost:8080/note', {
+        const response = await fetch(`${import.meta.env.VITE_BASE_URL}/note`, {
           method: 'POST',
           headers: headers,
           body: JSON.stringify({

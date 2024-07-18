@@ -3,8 +3,11 @@
     <h1>My Notes</h1>
     <ul>
       <li v-for="note in notes" :key="note.ID">
-        <a :href="'/note/' + note.UniqueKey">{{ note.ID }} - Current Views: {{ note.Views }} - Expiration : {{ note.Expiration }} - Max Views: {{ note.MaxViews }} </a>
-        <br>
+        <a :href="'/note/' + note.UniqueKey"
+          >{{ note.ID }} - Current Views: {{ note.Views }} - Expiration : {{ note.Expiration }} -
+          Max Views: {{ note.MaxViews }}
+        </a>
+        <br />
         {{ note.Content }}
       </li>
     </ul>
@@ -15,14 +18,13 @@
 import { defineComponent, ref, onMounted } from 'vue'
 
 interface Note {
-  ID: number;
-  Content: string;
-  UniqueKey: string;
-  Expiration: string;
-  CreatedAt: string;
-  MaxViews: number;
-  Views: number;
-
+  ID: number
+  Content: string
+  UniqueKey: string
+  Expiration: string
+  CreatedAt: string
+  MaxViews: number
+  Views: number
 }
 
 export default defineComponent({
@@ -32,7 +34,7 @@ export default defineComponent({
     onMounted(async () => {
       try {
         const token = sessionStorage.getItem('token')
-        const response = await fetch('http://localhost:8080/user/notes', {
+        const response = await fetch(`${import.meta.env.VITE_BASE_URL}/user/notes`, {
           headers: {
             Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json'

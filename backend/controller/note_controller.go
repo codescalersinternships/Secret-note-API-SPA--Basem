@@ -55,7 +55,10 @@ func (nc *NoteController) CreateNote(c *gin.Context) {
 		Expiration: expirationTime,
 		MaxViews:   input.MaxViews,
 		Views:      0,
-		Username:   userID.(string),
+	}
+
+	if userID != nil {
+		note.Username = userID.(string)
 	}
 
 	nc.DB.CreateNote(&note)

@@ -23,7 +23,7 @@ export default defineComponent({
     onMounted(async () => {
       const noteID = route.params.key as string
       try {
-        const response = await fetch(`http://localhost:8080/note/${noteID}`, {
+        const response = await fetch(`${import.meta.env.VITE_BASE_URL}/note/${noteID}`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json'
