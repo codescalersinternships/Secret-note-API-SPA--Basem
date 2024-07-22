@@ -13,6 +13,12 @@ import (
 	"github.com/joho/godotenv"
 )
 
+// @title Secret Note API
+// @version 1.0
+// @description This is a simple API for creating and managing secret notes.
+
+// @host localhost:8080
+
 func main() {
 	database := database.NewDB()
 	database.ConnectDatabase()

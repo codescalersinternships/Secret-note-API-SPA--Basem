@@ -23,6 +23,15 @@ func NewUserController(db *database.DB) *UserController {
 	return &UserController{DB: db}
 }
 
+// @Summary Register a new user
+// @Description Register a new user with username and password
+// @Tags users
+// @Accept json
+// @Produce json
+// @Param input body AuthInput true "Username and password"
+// @Success 200 {object} models.User
+// @Failure 400 {string} error
+// @Router /register [post]
 func (uc *UserController) Register(c *gin.Context) {
 	var input AuthInput
 
@@ -42,6 +51,16 @@ func (uc *UserController) Register(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": user})
 }
 
+// @Summary Login
+// @Description Login with username and password
+// @Tags users
+// @Accept json
+// @Produce json
+// @Param input body AuthInput true "Username and password"
+// @Success 200 {string} token
+// @Failure 400 {string} error
+// @Failure 401 {string} error
+// @Router /login [post]
 func (uc *UserController) Login(c *gin.Context) {
 
 	var input AuthInput

@@ -2,7 +2,7 @@ run-frontend:
 	cd frontend && npm run dev
 
 run-backend:
-	cd backend && go run cmd/main.go
+	cd backend && swag init -g cmd/main.go && go run cmd/main.go
 
 docker-build-backend:
 	cd backend && docker build -t backend .

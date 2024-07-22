@@ -24,6 +24,15 @@ type CreateNoteInput struct {
 	MaxViews   int    `json:"maxViews" binding:"required,min=1"`
 }
 
+// @Summary Create a new note
+// @Description Create a new note with content, expiration date and max views
+// @Tags notes
+// @Accept json
+// @Produce json
+// @Param input body CreateNoteInput true "Content, expiration date and max views"
+// @Success 200 {string} url
+// @Failure 400 {object} string
+// @Router /note [post]
 func (nc *NoteController) CreateNote(c *gin.Context) {
 	userID, ok := c.Get("userID")
 	if !ok {
@@ -65,6 +74,15 @@ func (nc *NoteController) CreateNote(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"url": "/note/" + note.UniqueKey})
 }
 
+// @Summary Get a note by key
+// @Description Get a note by its unique key
+// @Tags notes
+// @Accept json
+// @Produce json
+// @Param key path string true "Unique key of the note"
+// @Success 200 {string} content
+// @Failure 404 {string} error
+// @Router /note/{key} [get]
 func (nc *NoteController) GetNoteByKey(c *gin.Context) {
 	uniqueKey := c.Param("key")
 
@@ -85,6 +103,15 @@ func (nc *NoteController) GetNoteByKey(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"content": note.Content})
 }
 
+// @Summary Get all notes of the user
+// @Description Get all notes of the user
+// @Tags notes
+// @Accept json
+// @Produce json
+// @Success 200 {object} string
+// @Failure 400 {object} string
+// @Security ApiKeyAuth
+// @Router /user/notes [get]
 func (nc *NoteController) GetUserNotes(c *gin.Context) {
 
 	userID, _ := c.Get("userID")
