@@ -1,0 +1,191 @@
+definitions:
+  controllers.AuthInput:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  controllers.CreateNoteInput:
+    properties:
+      content:
+        type: string
+      expiration:
+        type: string
+      maxViews:
+        minimum: 1
+        type: integer
+    required:
+    - content
+    - expiration
+    - maxViews
+    type: object
+  models.Note:
+    properties:
+      content:
+        type: string
+      createdAt:
+        type: string
+      expiration:
+        type: string
+      id:
+        type: integer
+      maxViews:
+        type: integer
+      uniqueKey:
+        type: string
+      username:
+        type: string
+      views:
+        type: integer
+    type: object
+  models.User:
+    properties:
+      notes:
+        items:
+          $ref: '#/definitions/models.Note'
+        type: array
+      password:
+        type: string
+      username:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: This is a simple API for creating and managing secret notes.
+  title: Secret Note API
+  version: "1.0"
+paths:
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: Login with username and password
+      parameters:
+      - description: Username and password
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.AuthInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "401":
+          description: Unauthorized
+          schema:
+            type: string
+      summary: Login
+      tags:
+      - users
+  /note:
+    post:
+      consumes:
+      - application/json
+      description: Create a new note with content, expiration date and max views
+      parameters:
+      - description: Content, expiration date and max views
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.CreateNoteInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      summary: Create a new note
+      tags:
+      - notes
+  /note/{key}:
+    get:
+      consumes:
+      - application/json
+      description: Get a note by its unique key
+      parameters:
+      - description: Unique key of the note
+        in: path
+        name: key
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: Get a note by key
+      tags:
+      - notes
+  /register:
+    post:
+      consumes:
+      - application/json
+      description: Register a new user with username and password
+      parameters:
+      - description: Username and password
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.AuthInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.User'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      summary: Register a new user
+      tags:
+      - users
+  /user/notes:
+    get:
+      consumes:
+      - application/json
+      description: Get all notes of the user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Get all notes of the user
+      tags:
+      - notes
+swagger: "2.0"

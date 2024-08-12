@@ -10,5 +10,5 @@ type Note struct {
 	CreatedAt  time.Time `gorm: "autoCreateTime"`
 	MaxViews   int
 	Views      int
-	UserID     uint
+	Username   string `gorm: "foreignKey:Username"`
 }

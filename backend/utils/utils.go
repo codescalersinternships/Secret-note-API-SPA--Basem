@@ -8,6 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
+	"golang.org/x/time/rate"
 )
 
 var secretKey = []byte("secret-key")
@@ -42,7 +43,7 @@ func verifyToken(tokenString string) (string, error) {
 		username := claims["username"].(string)
 		return username, nil
 	} else {
-		return "", fmt.Errorf("Invalid token")
+		return "", fmt.Errorf("invalid token")
 	}
 }
 
@@ -60,6 +61,43 @@ func AuthMiddleware() gin.HandlerFunc {
 		}
 
 		c.Set("userID", userName)
+		c.Next()
+	}
+}
+
+func OptionalAuthMiddleware() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		token := c.GetHeader("Authorization")
+
+		if token == "" {
+			c.Next()
+			return
+		}
+
+		tokenString := token[len("Bearer "):]
+
+		userName, err := verifyToken(tokenString)
+		if err != nil {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid token"})
+			c.Abort()
+			return
+		}
+
+		c.Set("userID", userName)
+		c.Next()
+	}
+}
+
+// RateLimiterMiddleware is a middleware that limits the number of requests a user can make in a given time frame
+func RateLimiterMiddleware(r rate.Limit, b int) gin.HandlerFunc {
+
+	limiter := rate.NewLimiter(r, b)
+
+	return func(c *gin.Context) {
+		if !limiter.Allow() {
+			c.AbortWithStatusJSON(http.StatusTooManyRequests, gin.H{"error": "Too many requests"})
+			return
+		}
 		c.Next()
 	}
 }

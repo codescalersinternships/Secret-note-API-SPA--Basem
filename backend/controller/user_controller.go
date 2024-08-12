@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/codescalersinternships/Secret-note-API-SPA--Basem/database"
@@ -14,7 +15,24 @@ type AuthInput struct {
 	Password string `json:"password" binding:"required"`
 }
 
-func Register(c *gin.Context) {
+type UserController struct {
+	DB *database.DB
+}
+
+func NewUserController(db *database.DB) *UserController {
+	return &UserController{DB: db}
+}
+
+// @Summary Register a new user
+// @Description Register a new user with username and password
+// @Tags users
+// @Accept json
+// @Produce json
+// @Param input body AuthInput true "Username and password"
+// @Success 200 {object} models.User
+// @Failure 400 {string} error
+// @Router /register [post]
+func (uc *UserController) Register(c *gin.Context) {
 	var input AuthInput
 
 	if err := c.ShouldBindJSON(&input); err != nil {
@@ -23,16 +41,27 @@ func Register(c *gin.Context) {
 	}
 
 	user := models.User{Username: input.Username, Password: input.Password}
-
-	if err := database.DB.Create(&user).Error; err != nil {
+	fmt.Print(user.Password)
+	if err := uc.DB.CreateUser(&user); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Username already exists"})
 		return
 	}
 
+	fmt.Print(user.Username)
 	c.JSON(http.StatusOK, gin.H{"data": user})
 }
 
-func Login(c *gin.Context) {
+// @Summary Login
+// @Description Login with username and password
+// @Tags users
+// @Accept json
+// @Produce json
+// @Param input body AuthInput true "Username and password"
+// @Success 200 {string} token
+// @Failure 400 {string} error
+// @Failure 401 {string} error
+// @Router /login [post]
+func (uc *UserController) Login(c *gin.Context) {
 
 	var input AuthInput
 
@@ -41,8 +70,7 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	result := database.DB.Where("username = ? AND password = ?", input.Username, input.Password).First(&models.User{})
-	if result.Error != nil {
+	if err := uc.DB.GetUserByUsernameAndPassword(input.Username, input.Password); err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid credentials"})
 		return
 	}
